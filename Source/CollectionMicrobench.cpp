@@ -45,9 +45,8 @@ class testAtlArray: public iTestCase
 			local.InsertAt( 0, 1 );
 
 		int sum = 0;
-		const int *const  pEnd = local.GetData() + local.GetCount();
-		for( const int* p = local.GetData(); p != pEnd; p++ )
-			sum += ( *p );
+		for( size_t i = 0; i < local.GetCount(); i++ )
+			sum += local[ i ];
 		return sum;
 	}
 };
@@ -97,10 +96,10 @@ int main()
 	size_t lengths[] = { 100, 1000, 100000, 1000000, 10000000, 100000000 };
 
 	using tTest =
-		testStl<std::vector<int>>;
+		// testStl<std::vector<int>>;
 		// testStl<std::list<int>>;
 		// testAtlArray;
-		// testAtlList;
+		testAtlList;
 
 	for( size_t l : lengths )
 	{
