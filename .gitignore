@@ -1,4 +1,7 @@
-Source/x64/
-Source/Win32/
+Source/.vs/
+Source/ipch/
 Source/CollectionMicrobench.VC.db
 Source/CollectionMicrobench.VC.VC.opendb
+Source/x64/
+Source/Win32/
+~$data.xlsx
