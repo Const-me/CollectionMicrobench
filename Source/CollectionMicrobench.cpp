@@ -1,5 +1,11 @@
 #include "stdafx.h"
 
+#define PLEXALLOC_DESTRUCTORS
+#include "PlexAlloc/Allocator.hpp"
+
+template <typename T>
+using PlexAllocator = PlexAlloc::Allocator<T>;
+
 __interface iTestCase
 {
 	void prepare( size_t length );
@@ -100,6 +106,7 @@ int main()
 		// testStl<std::list<int>>;
 		// testAtlArray;
 		testAtlList;
+		// testStl<std::list<int, PlexAllocator<int>>>;
 
 	for( size_t l : lengths )
 	{
