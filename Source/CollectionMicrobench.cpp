@@ -1,6 +1,4 @@
 #include "stdafx.h"
-
-#define PLEXALLOC_DESTRUCTORS
 #include "PlexAlloc/Allocator.hpp"
 
 template <typename T>
