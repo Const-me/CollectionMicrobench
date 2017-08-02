@@ -6,3 +6,4 @@ Source/x64/
 Source/Win32/
 ~$data.xlsx
 Source/CollectionMicrobench.vcxproj.user
+Source/test.bin

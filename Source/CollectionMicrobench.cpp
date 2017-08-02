@@ -1,37 +1,5 @@
 #include "stdafx.h"
-#include "PlexAlloc/Allocator.hpp"
-
-template <typename T>
-using PlexAllocator = PlexAlloc::Allocator<T>;
-
-__interface iTestCase
-{
-	void prepare( size_t length );
-	int run( int inserts );
-};
-
-// A test case for STL containers. Because they expose very similar API, a single template implementation is required.
-template<class tContainer>
-class testStl: public iTestCase
-{
-	tContainer local;
-
-	void prepare( size_t length )
-	{
-		for( size_t i = 0; i < length; i++ )
-			local.push_back( 1 );
-	}
-	int run( int localInserts )
-	{
-		for( int i = 0; i < localInserts; i++ )
-			local.insert( local.begin(), 1 );
-
-		int sum = 0;
-		for( int i : local )
-			sum += i;
-		return sum;
-	}
-};
+#include "TestMain.hpp"
 
 // ATL containers need special care in terms of API.
 class testAtlArray: public iTestCase
@@ -76,23 +44,6 @@ class testAtlList: public iTestCase
 	}
 };
 
-static void run( iTestCase *proc, size_t length, int inserts )
-{
-	using namespace std::chrono;
-	using stopwatch = high_resolution_clock;
-
-	proc->prepare( length );
-
-	const stopwatch::time_point t1 = stopwatch::now();
-
-	const int res = proc->run( inserts );
-
-	const stopwatch::time_point t2 = stopwatch::now();
-	duration<double> time_span = duration_cast<duration<double>>( t2 - t1 );
-
-	printf( "%i\t%.9f\t%i\n", int( length ), time_span.count(), res );
-}
-
 int main()
 {
 	const int inserts = 5;
@@ -101,9 +52,9 @@ int main()
 
 	using tTest =
 		// testStl<std::vector<int>>;
-		// testStl<std::list<int>>;
+		testStl<std::list<int>>;
 		// testAtlArray;
-		testAtlList;
+		// testAtlList;
 		// testStl<std::list<int, PlexAllocator<int>>>;
 
 	for( size_t l : lengths )

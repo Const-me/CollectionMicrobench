@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="CollectionMicrobench.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Linux.cpp">
+      <Filter>Linux</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PlexAlloc\Plex.hpp" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="PlexAlloc\Allocator.hpp">
+      <Filter>PlexAlloc</Filter>
+    </ClInclude>
+    <ClInclude Include="PlexAlloc\FreeList.hpp">
+      <Filter>PlexAlloc</Filter>
+    </ClInclude>
+    <ClInclude Include="PlexAlloc\MemAlloc.hpp">
+      <Filter>PlexAlloc</Filter>
+    </ClInclude>
+    <ClInclude Include="TestMain.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="PlexAlloc">
+      <UniqueIdentifier>{86faab3a-4398-4aba-9cbc-c7b4f6da7218}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Linux">
+      <UniqueIdentifier>{20a8382a-74af-471e-90fa-1a91975f138b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="makefile">
+      <Filter>Linux</Filter>
+    </None>
+    <None Include="run-linux.sh">
+      <Filter>Linux</Filter>
+    </None>
+  </ItemGroup>
+</Project>
