@@ -38,12 +38,13 @@ public:
 	}
 };
 
+using namespace std::chrono;
+using stopwatch = high_resolution_clock;
+
 template<class tTest>
-void run( size_t length, int inserts )
+void runImpl( size_t length, int inserts )
 {
 	tTest test;
-	using namespace std::chrono;
-	using stopwatch = high_resolution_clock;
 
 	test.prepare( length );
 
@@ -54,7 +55,17 @@ void run( size_t length, int inserts )
 	const stopwatch::time_point t2 = stopwatch::now();
 	duration<double> time_span = duration_cast<duration<double>>( t2 - t1 );
 
-	printf( "%i\t%.9f\t%i\n", int( length ), time_span.count(), res );
+	printf( "%i\t%i\t%.9f", int( length ), res, time_span.count() );
+}
+
+template<class tTest>
+void run( size_t length, int inserts )
+{
+	const stopwatch::time_point t1 = stopwatch::now();
+	runImpl<tTest>( length, inserts );
+	const stopwatch::time_point t2 = stopwatch::now();
+	duration<double> time_span = duration_cast<duration<double>>( t2 - t1 );
+	printf( "\t%.9f\n", time_span.count() );
 }
 
 template<class tTest>
