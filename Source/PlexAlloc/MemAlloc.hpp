@@ -7,7 +7,7 @@ namespace PlexAlloc
 #ifdef _MSC_VER
 		return _aligned_malloc( size, alignment );
 #else
-		return std::aligned_alloc( alignment, size )
+		return aligned_alloc( alignment, size );
 #endif
 	}
 
@@ -16,7 +16,7 @@ namespace PlexAlloc
 #ifdef _MSC_VER
 		_aligned_free( ptr );
 #else
-		std::free( ptr );
+		free( ptr );
 #endif
 	}
 }
