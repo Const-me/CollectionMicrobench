@@ -8,7 +8,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PlexAlloc\Plex.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="PlexAlloc\Allocator.hpp">
@@ -21,6 +20,9 @@
       <Filter>PlexAlloc</Filter>
     </ClInclude>
     <ClInclude Include="TestMain.hpp" />
+    <ClInclude Include="PlexAlloc\Plex.hpp">
+      <Filter>PlexAlloc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PlexAlloc">

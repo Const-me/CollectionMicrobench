@@ -21,7 +21,7 @@ namespace PlexAlloc
 
 		Allocator() noexcept {};
 
-		Allocator( const Allocator& ) noexcept = delete;
+		Allocator( const Allocator& ) noexcept {};
 
 		template <typename U, size_t bs, size_t a>
 		Allocator( const Allocator<U, bs, a>& ) noexcept {};
@@ -63,7 +63,7 @@ namespace PlexAlloc
 	};
 
 #ifdef _MSC_VER
-	// In Microsoft's version of STL, each collection contains a dynamically-allocated pointer to a _Container_proxy instance.
+	// In Microsoft's version of STL, when _ITERATOR_DEBUG_LEVEL is non-zero, each collection contains a dynamically-allocated pointer to a _Container_proxy instance.
 	// We don't want to use PlexAlloc allocator for that one.
 	template<>
 	class Allocator<std::_Container_proxy>

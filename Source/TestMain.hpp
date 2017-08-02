@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <sstream>
 #include "PlexAlloc/Allocator.hpp"
+#include <random>
 
 template <typename T>
 using PlexAllocator = PlexAlloc::Allocator<T>;
@@ -12,6 +13,8 @@ class iTestCase
 public:
 	virtual void prepare( size_t length ) = 0;
 	virtual int run( int inserts ) = 0;
+
+	static bool isMap() { return false; }
 };
 
 // A test case for STL containers. Because they expose very similar API, a single template implementation is required.
@@ -36,6 +39,30 @@ public:
 			sum += i;
 		return sum;
 	}
+};
+
+template<class tContainer>
+class testStdMap: public iTestCase
+{
+	tContainer local;
+
+public:
+	void prepare( size_t length ) override
+	{
+		std::mt19937 rr;
+		rr.seed( 0 );
+		for( size_t i = 0; i < length; i++ )
+			local[ (int)rr() ] = 1;
+	}
+	int run( int localInserts ) override
+	{
+		int sum = 0;
+		for( auto p : local )
+			sum += p.second;
+		return sum;
+	}
+
+	static bool isMap() { return true; }
 };
 
 using namespace std::chrono;
@@ -72,9 +99,14 @@ template<class tTest>
 int runAll()
 {
 	size_t lengths[] = { 100, 1000, 100000, 1000000, 10000000, 100000000 };
+
 	const int inserts = 5;
 	for( size_t l : lengths )
+	{
+		if( tTest::isMap() && l > 10000000 )
+			continue;
 		run<tTest>( l, inserts );
+	}
 	return 0;
 }
 
