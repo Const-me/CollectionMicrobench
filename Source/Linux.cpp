@@ -2,21 +2,18 @@
 #include <list>
 #include "TestMain.hpp"
 
-int main()
+int main( int argc, const char* argv[] )
 {
-	const int inserts = 5;
+	const int nTest = parseArguments( argc, argv );
+	if( nTest < 0 )
+		return nTest;
 
-	size_t lengths[] = { 100, 1000, 100000, 1000000, 10000000, 100000000 };
-
-	using tTest =
-		// testStl<std::vector<int>>;
-		testStl<std::list<int>>;
-		// testStl<std::list<int, PlexAllocator<int>>>;
-
-	for( size_t l : lengths )
+	switch( nTest )
 	{
-		tTest coll;
-		run( &coll, l, inserts );
-	}
-	return 0;
+		TEST_CASE1( 0, testStl<std::vector<int>> );
+		TEST_CASE1( 1, testStl<std::list<int>> );
+		TEST_CASE2( 2, testStl<std::list<int, PlexAllocator<int>>> );
+	};
+	printf( "The argument is too large" );
+	return -1;
 }
