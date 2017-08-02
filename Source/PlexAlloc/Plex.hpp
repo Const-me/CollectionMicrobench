@@ -7,7 +7,7 @@ namespace PlexAlloc
 {
 	// This class allocates RAM in continuous batches, similar to CAtlPlex.
 	// It only frees RAM when destroyed.
-	// It doesn't call neither constructors nor destructors, and allocate() method returns uninitialized blocks of RAM.
+	// It doesn't call neither constructors nor destructors, i.e. allocate() returns uninitialized blocks of RAM.
 	template <typename T, size_t nBlockSize = 10, size_t align = alignof ( T )>
 	class Plex
 	{
@@ -37,6 +37,7 @@ namespace PlexAlloc
 
 	public:
 		Plex() { reset(); }
+		~Plex() { clear(); }
 		Plex( const Plex & that ) = delete;
 		Plex& operator=( const Plex & that ) = delete;
 		Plex( Plex && that )
@@ -53,30 +54,31 @@ namespace PlexAlloc
 			return *this;
 		}
 
-		// Free all memory, don't call the destructors
+		// Free all memory
 		void clear()
 		{
 			while( nullptr != m_pChunk )
 			{
-				CMemChunk* pNext;
-				pNext = m_pChunk->pNext;
+				CMemChunk* const pNext = m_pChunk->pNext;
 				freeChunk( m_pChunk );
 				m_pChunk = pNext;
 			}
 			reset();
 		}
 
-		// Allocate a new item, don't call a constructor
+		// Allocate a new item
 		T* allocate()
 		{
 			const size_t nNewCount = m_usedInChunk + 1;
 			if( nNewCount <= nBlockSize )
 			{
+				// Still have free space in the current chunk
 				T* const result = reinterpret_cast<T*>( &m_pChunk->items[ m_usedInChunk ] );
 				m_usedInChunk = nNewCount;
 				return result;
 			}
 
+			// Allocate & initialize new chunk
 			CMemChunk* const pNewChunk = allocateChunk();
 			if( nullptr == pNewChunk )
 				throw std::bad_alloc();
