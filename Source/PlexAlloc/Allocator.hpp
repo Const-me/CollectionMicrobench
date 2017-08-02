@@ -5,6 +5,7 @@
 
 namespace PlexAlloc
 {
+	// CAtlPlex-like allocator compatible with node-based STL collections (linked lists, RB trees, hash maps).
 	template <typename T, size_t nBlockSize = 10, size_t align = alignof ( T )>
 	class Allocator
 	{

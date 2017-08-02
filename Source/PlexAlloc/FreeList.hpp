@@ -5,7 +5,7 @@
 namespace PlexAlloc
 {
 	// Implements a single linked list of free elements, and exposes LIFO stack interface for that list.
-	// While relatively efficient, strictly speaking, the implementation corrupts memory of the freed objects. Therefore, after FreeList::push(), calling ~T() destructor gonna cause a crash in runtime.
+	// While relatively efficient, strictly speaking, the implementation corrupts memory of the freed objects. Therefore, after FreeList::push(), calling ~T() destructor gonna cause a crash in runtime. If you want to call a destructor, do it before FreeList::push(). Fortunately, looks like STL containers do just that.
 	template<class T>
 	class FreeList
 	{
@@ -22,6 +22,7 @@ namespace PlexAlloc
 			static_assert( sizeof( T ) >= sizeof( void* ), "FreeList is only compatible with elements larger than a pointer." );
 			m_top = nullptr;
 		}
+		~FreeList() = default;
 		FreeList( const FreeList& ) = delete;
 		FreeList& operator=( const FreeList& ) = delete;
 		FreeList( FreeList&& that ) : m_top( that.m_top )

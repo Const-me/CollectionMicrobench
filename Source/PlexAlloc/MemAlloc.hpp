@@ -2,6 +2,7 @@
 
 namespace PlexAlloc
 {
+	// Allocate aligned block of memory
 	inline void* alignedMalloc( size_t size, size_t alignment )
 	{
 #ifdef _MSC_VER
@@ -11,6 +12,7 @@ namespace PlexAlloc
 #endif
 	}
 
+	// Free aligned block of memory
 	inline void alignedFree( void* ptr )
 	{
 #ifdef _MSC_VER
