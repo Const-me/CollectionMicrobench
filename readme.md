@@ -1,30 +1,1 @@
-# A C++ collections benchmark #
-
-[Inspired by this.](https://jackmott.github.io/programming/2016/08/20/when-bigo-foolsya.html)
-
-This benchmark tests performance of collection insert and iterate operations.
-
-Very limited scenario, I only ran each test once, used an old Sandy Bridge laptop. Only tested Release x64 configuration. Built with Visual Studio 2015 Update 3, with default compiler options.
-
-Don’t believe the results, test with your use cases, and on your hardware.
-
-Four test cases are implemented here:
-
-1. `std::vector<int>`
-1. `std::list<int>`
-1. `CAtlArray<int>`
-1. `CAtlList<int>`
-
-![And here’s the results.](results-graph.png)
-
-I don’t know why CAtlArray is faster than std::vector. My expectation was they should perform very similarly.
- 
-But I do know why ATL’s lists are so much faster. The main reason is memory management.
-
-Each instance of CAtlList class encapsulates its own memory pool.
-
-Sure, this brings limitations. You can’t splice an ATL’s list in two. Also, if you have 1 million of lists each containing a single element, ATL list will be slower and will consume more memory. 
-
-While generally more limited, in a typical case, when you have many elements in a container, the ATL’s version is much faster.
-
-Same applies to ATL’s red-black tree based containers, and the hash map container. They too contain a memory pool to keep its elements locally in RAM. This causes significant performance advantage over the corresponding STL collection classes.
+# A C++ collections benchmark #[Inspired by this.](https://jackmott.github.io/programming/2016/08/20/when-bigo-foolsya.html)This benchmark tests performance of various collection insert and iterate operations.Very limited scenario, I only ran each test once. I was using i5-4460 desktop with 16GB RAM. The Linux results are from WSL running on top of the same Windows, `uname -r` says `4.4.0-43-Microsoft`, release says `Ubuntu 16.04.2 LTS`.Windows build is made by Visual Studio 2015 update 3. Linux build by clang 4.0 with libc++ 4.0.1.Only tested Release x64 configuration, tried to keep build options more or less equivalent (Linux version compiles to SSE2 instruction set).Following test cases are implemented here:1. `std::vector<int>`1. `std::list<int>`1. `std::list<int>` with custom CAtlPlex-like allocator1. `CAtlArray<int>` (windows-only)1. `CAtlList<int>` (windows-only)![And here’s the results.](results2-table.png)Following observation can be made from the data.On Windows, the performance improvement from my custom allocator is huge.Microsoft’s STL and/or C++ compiler optimizes for very small collections, like 100 elements only. For larger collections, clang with libc++ is much faster. At least for this particular test case.Even on Linux where STL is faster, the custom allocator I’ve implemented helped a lot, especially the total time (which includes memory allocation and de-allocation).Finally, I've added Red-Black maps and hash maps to the mix. All of them is with int keys and int values.![Here’s the results.](result-maps.png)As you see, for red-black “maps”, runtime performance isn’t affected much. The reason is, tests insert random values, so iterating them sequentially still involves a pointer chase. However allocation/deallocation became faster.OTOH, hash maps benefit from plex allocator.
