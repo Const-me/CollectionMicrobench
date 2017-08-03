@@ -19,7 +19,7 @@ namespace PlexAlloc
 	public:
 		FreeList()
 		{
-			static_assert( sizeof( T ) >= sizeof( void* ), "FreeList is only compatible with elements larger than a pointer." );
+			static_assert( sizeof( T ) >= sizeof( void* ), "FreeList<T> is only compatible with items at least as large as a pointer." );
 			m_top = nullptr;
 		}
 		~FreeList() = default;
@@ -36,6 +36,7 @@ namespace PlexAlloc
 			return *this;
 		}
 
+		// Push an item to the top of the list
 		void push( T* ptr )
 		{
 			auto node_ptr = reinterpret_cast<FreeItemBuffer*>( ptr );
@@ -43,13 +44,19 @@ namespace PlexAlloc
 			m_top = node_ptr;
 		}
 
+		// True if there're no elements on the list
 		bool empty() const
 		{
 			return nullptr == m_top;
 		}
 
+		// Pop an element from the top of the list.
 		T* pop()
 		{
+#ifndef NDEBUG
+			if( empty() )
+				throw std::domain_error( "FreeList<T> is empty." );
+#endif
 			T* res = reinterpret_cast<T*>( m_top );
 			m_top = m_top->next;
 			return res;

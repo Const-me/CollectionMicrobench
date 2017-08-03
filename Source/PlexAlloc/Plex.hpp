@@ -29,10 +29,23 @@ namespace PlexAlloc
 			alignedFree( p );
 		}
 
+		// Reset the internal state, but don't free any memory.
 		void reset() noexcept
 		{
 			m_pChunk = nullptr;
 			m_usedInChunk = nBlockSize;
+		}
+
+		// Free all memory
+		void clear()
+		{
+			while( nullptr != m_pChunk )
+			{
+				CMemChunk* const pNext = m_pChunk->pNext;
+				freeChunk( m_pChunk );
+				m_pChunk = pNext;
+			}
+			reset();
 		}
 
 	public:
@@ -52,18 +65,6 @@ namespace PlexAlloc
 			m_usedInChunk = that.m_usedInChunk;
 			that.reset();
 			return *this;
-		}
-
-		// Free all memory
-		void clear()
-		{
-			while( nullptr != m_pChunk )
-			{
-				CMemChunk* const pNext = m_pChunk->pNext;
-				freeChunk( m_pChunk );
-				m_pChunk = pNext;
-			}
-			reset();
 		}
 
 		// Allocate a new item
