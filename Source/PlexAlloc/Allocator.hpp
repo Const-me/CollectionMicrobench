@@ -51,7 +51,11 @@ namespace PlexAlloc
 					return m_plex.allocate();
 				return m_freeList.pop();
 			}
-			return static_cast<T*>( alignedMalloc( n * sizeof( T ), align ) );
+			// Fall back to malloc.
+			void* pArray = alignedMalloc( n * sizeof( T ), align );
+			if( nullptr == pArray )
+				throw std::bad_alloc();
+			return static_cast<T*>( pArray );
 		}
 
 		void deallocate( T* ptr, size_type n ) noexcept
