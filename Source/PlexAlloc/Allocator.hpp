@@ -70,8 +70,8 @@ namespace PlexAlloc
 #ifdef _MSC_VER
 	// In Microsoft's version of STL, when _ITERATOR_DEBUG_LEVEL is non-zero, each collection contains a dynamically-allocated pointer to a _Container_proxy instance.
 	// We don't want to use PlexAlloc allocator for that one.
-	template<>
-	class Allocator<std::_Container_proxy>
+	template<size_t nBlockSize, size_t align>
+	class Allocator<std::_Container_proxy, nBlockSize, align>
 	{
 	public:
 		using value_type = std::_Container_proxy;
