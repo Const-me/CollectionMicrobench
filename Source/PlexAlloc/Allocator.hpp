@@ -53,7 +53,7 @@ namespace PlexAlloc
 			}
 			// Fall back to malloc.
 			// This is used in e.g. Microsoft's std::unordered_map, which holds both individual nodes of type _List_node<pair<K,V>>, and also a vector of _List_unchecked_iterator<_List_val<_List_simple_types<pair<K,V>>>>
-			void* pArray = alignedMalloc( n * sizeof( T ), align );
+			void* const pArray = alignedMalloc( n * sizeof( T ), align );
 			if( nullptr == pArray )
 				throw std::bad_alloc();
 			return static_cast<T*>( pArray );
@@ -72,27 +72,17 @@ namespace PlexAlloc
 	// In Microsoft's version of STL, when _ITERATOR_DEBUG_LEVEL is non-zero, each collection contains a dynamically-allocated pointer to a _Container_proxy instance.
 	// We don't want to use PlexAlloc allocator for that one.
 	template<size_t nBlockSize, size_t align>
-	class Allocator<std::_Container_proxy, nBlockSize, align>
+	class Allocator<std::_Container_proxy, nBlockSize, align>: public std::allocator<std::_Container_proxy>
 	{
 	public:
-		using value_type = std::_Container_proxy;
-
 		Allocator() noexcept {};
-
 		Allocator( const Allocator& ) noexcept = default;
 
 		template <typename U, size_t bs, size_t a>
 		Allocator( const Allocator<U, bs, a>& ) noexcept {}
 
-		std::_Container_proxy* allocate( size_t n )
-		{
-			return static_cast<std::_Container_proxy*>( ::operator new( n * sizeof( std::_Container_proxy ) ) );
-		}
-
-		void deallocate( std::_Container_proxy* ptr, size_t n ) noexcept
-		{
-			::operator delete( ptr );
-		}
+		template<class U>
+		struct rebind { using other = Allocator<U, nBlockSize, align>; };
 	};
 #endif
 }
