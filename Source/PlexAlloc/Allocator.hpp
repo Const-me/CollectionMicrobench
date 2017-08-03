@@ -52,6 +52,7 @@ namespace PlexAlloc
 				return m_freeList.pop();
 			}
 			// Fall back to malloc.
+			// This is used in e.g. Microsoft's std::unordered_map, which holds both individual nodes of type _List_node<pair<K,V>>, and also a vector of _List_unchecked_iterator<_List_val<_List_simple_types<pair<K,V>>>>
 			void* pArray = alignedMalloc( n * sizeof( T ), align );
 			if( nullptr == pArray )
 				throw std::bad_alloc();
